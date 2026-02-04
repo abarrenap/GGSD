@@ -62,7 +62,6 @@ class LaplacianDatasetNX(Dataset):
             
             
             try:
-                aaa
                 eigen_dic = torch.load(ds_filename+'.eigen')
                 print("Loaded precomuted eigenquantities")
             

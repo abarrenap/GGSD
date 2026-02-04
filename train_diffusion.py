@@ -100,9 +100,10 @@ if __name__ == "__main__":
         log_every_n_steps=args.log_every_n_steps,
         check_val_every_n_epoch=None,
         val_check_interval = args.val_check_interval,
-        max_epochs = args.max_epochs
+        max_epochs = 200
     )
 
     trainer.fit(model, train_loader, valid_loader)
+    trainer.save_checkpoint("./data/model_weights/diffusion_model.ckpt")
 
 

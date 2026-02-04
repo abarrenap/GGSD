@@ -37,7 +37,7 @@ diffusion_model_checkpoint = 'data/model_weights/diffusion_qm9.ckpt'
 predictor_model_checkpoint = 'data/model_weights/predictor_qm9.ckpt'
 nodefeatures = True
 
-device = 'cuda'
+device = 'cpu'
 n_graphs = 10
 sampling_steps = 200
 
@@ -65,7 +65,7 @@ with torch.no_grad():
     mask = xx.abs().sum(-1)>1e-6
     xx = xx/(xx.norm(dim=1)[:,None,:]+1e-12)
 
-    inno =  torch.randn(list(mask.shape[:2])+[model_predictor.latent_dim], device=args.device)*0
+    inno =  torch.randn(list(mask.shape[:2])+[model_predictor.latent_dim], device=device)*0
     fake_adj,_,_ = model_predictor(inno, yy[:,0], xx, mask)
 
     #extract graphs

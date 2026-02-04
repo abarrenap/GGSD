@@ -65,7 +65,7 @@ class SpectralDiffusion(L.LightningModule):
         return loss
     
 
-    def sample(self, num_points, batch_size, flexibility, point_dim, scale_xy, unscale_xy, sampling_steps=100, device='cuda',reproject=False):
+    def sample(self, num_points, batch_size, flexibility, point_dim, scale_xy, unscale_xy, sampling_steps=100, device='cpu',reproject=False):
 #         train_set = self.trainer.train_dataloader.dataset.datasets
 #         test_set = self.trainer.val_dataloaders[0].dataset
         
@@ -125,19 +125,15 @@ class SpectralDiffusion(L.LightningModule):
 
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), 
-            lr=self.args.lr
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.args.lr)
+        # store scheduler manually
+        self.scheduler = torch.optim.lr_scheduler.LinearLR(
+            optimizer,
+            start_factor=1.0,
+            end_factor=0.1,
+            total_iters=self.hparams.max_epochs // 2
         )
-
-        # scheduler = get_cosine_schedule_with_warmup(
-        #     optimizer,
-        #     num_warmup_steps = 500,
-        #     num_training_steps = self.hparams.train_loop_batches*self.hparams.max_epochs
-        # )
-        scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, 1, 0.1, self.hparams.max_epochs//2)
-        
-        return {"optimizer": optimizer,  "lr_scheduler":scheduler}
-
+        return optimizer
     
     def training_step(self, batch, batch_idx):
         optimizer = self.optimizers()
@@ -162,8 +158,7 @@ class SpectralDiffusion(L.LightningModule):
         self.log('lr', self.optimizers().param_groups[0]['lr'], on_step=False, on_epoch=True)
 
     def on_train_epoch_end(self):
-        scheduler = self.lr_schedulers()
-        scheduler.step()
+        self.scheduler.step()
         
     def validation_step(self, batch, batch_idx):
         pass
@@ -185,7 +180,7 @@ class SpectralDiffusion(L.LightningModule):
         self.log('spectral',  torch.tensor(spectral).float(), on_step=False, on_epoch=True)
 
         
-    def sample_eigs(self, max_nodes, num_eigs, scale_xy, unscale_xy, num_graphs=256, oversample_mult=4, device='cuda', sampling_steps=100, reproject=False):
+    def sample_eigs(self, max_nodes, num_eigs, scale_xy, unscale_xy, num_graphs=256, oversample_mult=4, device='cpu', sampling_steps=100, reproject=False):
         # Sample eigenvectors and eigenvalues
         assert(type(max_nodes) is list)
         
@@ -220,7 +215,7 @@ class SpectralDiffusion(L.LightningModule):
         return xx,yy
     
     
-    def sample_graphs(self, max_nodes, num_eigs, scale_xy, unscale_xy, num_graphs=256, oversample_mult=4, device='cuda'):
+    def sample_graphs(self, max_nodes, num_eigs, scale_xy, unscale_xy, num_graphs=256, oversample_mult=4, device='cpu'):
         # Sample eigenvectors and eigenvalues
         gen_pcs = []
         with torch.no_grad():
@@ -278,7 +273,7 @@ class SpectralDiffusion(L.LightningModule):
         return graph_pred_list, LLLorth      
 
 
-    def evaluate(self, train_set, test_set, device='cuda'):
+    def evaluate(self, train_set, test_set, device='cpu'):
         train_set.get_extra_data(True)
         test_set.get_extra_data(True)
         
