@@ -24,18 +24,21 @@ if not os.path.isdir("./data/model_weights/"):
 
 nodefeatures = False
 
-diffusion_model_checkpoint = 'data/model_weights/diffusion_sbm_200.ckpt'
-predictor_model_checkpoint = 'data/model_weights/predictor_sbm_200.ckpt'
+# diffusion_model_checkpoint = 'data/model_weights/diffusion_sbm_200.ckpt'
+# predictor_model_checkpoint = 'data/model_weights/predictor_sbm_200.ckpt'
 
-diffusion_model_checkpoint = 'data/model_weights/diffusion_planar_64_200.ckpt'
-predictor_model_checkpoint = 'data/model_weights/predictor_planar_64_200.ckpt'
+# diffusion_model_checkpoint = 'data/model_weights/diffusion_planar_64_200.ckpt'
+# predictor_model_checkpoint = 'data/model_weights/predictor_planar_64_200.ckpt'
 
-diffusion_model_checkpoint = 'data/model_weights/diffusion_proteins.ckpt'
-predictor_model_checkpoint = 'data/model_weights/predictor_proteins.ckpt'
+# diffusion_model_checkpoint = 'data/model_weights/diffusion_proteins.ckpt'
+# predictor_model_checkpoint = 'data/model_weights/predictor_proteins.ckpt'
 
-diffusion_model_checkpoint = 'data/model_weights/diffusion_qm9.ckpt'
-predictor_model_checkpoint = 'data/model_weights/predictor_qm9.ckpt'
-nodefeatures = True
+# diffusion_model_checkpoint = 'data/model_weights/diffusion_qm9.ckpt'
+# predictor_model_checkpoint = 'data/model_weights/predictor_qm9.ckpt'
+# nodefeatures = True
+
+diffusion_model_checkpoint = 'data/model_weights/diffusion_dimacs_200.ckpt'
+predictor_model_checkpoint = 'data/model_weights/predictor_dimacs_200.ckpt'
 
 device = 'cpu'
 n_graphs = 10

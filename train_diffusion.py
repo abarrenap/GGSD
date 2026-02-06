@@ -30,7 +30,7 @@ def get_arg_parser():
 
     # Training
     parser.add_argument('--seed', type=int, default=2023)
-    parser.add_argument('--device', type=str, default="cuda")
+    parser.add_argument('--device', type=str, default="cpu")
     parser.add_argument('--val_check_interval', type=int, default=5000)
     parser.add_argument('--log_every_n_steps', type=int, default=500)
     parser.add_argument('--wandb', type=eval, default=True, choices=[True, False])
@@ -100,10 +100,10 @@ if __name__ == "__main__":
         log_every_n_steps=args.log_every_n_steps,
         check_val_every_n_epoch=None,
         val_check_interval = args.val_check_interval,
-        max_epochs = 200
+        max_epochs = args.max_epochs
     )
 
     trainer.fit(model, train_loader, valid_loader)
-    trainer.save_checkpoint("./data/model_weights/diffusion_model.ckpt")
+    trainer.save_checkpoint(f"./data/model_weights/diffusion_{args.dataset}_{args.max_epochs}.ckpt")
 
 
